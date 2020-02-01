@@ -6,7 +6,7 @@ public class ReportOutDTO {
 	private int salesmenQuantity;
 	private String moreExpensiveSaleId;
 	private String worseSale;
-	
+
 	public static ReportOutDTO from(Report report) {
 
 		ReportOutDTO reportOutDTO = new ReportOutDTO();

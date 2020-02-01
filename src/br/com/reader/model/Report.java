@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class Report {
+public class Report implements Reportable{
 
 	private List<Client> clients = new ArrayList<>();
 	private List<Sale> sales = new ArrayList<>();
@@ -41,7 +41,7 @@ public class Report {
 
 	}
 	
-	private String getWorseSale(Map<String, Double> salesmanResult) {
+	private static String getWorseSale(Map<String, Double> salesmanResult) {
 		
 		String worse = "";
 		Double worseValue = Double.MAX_VALUE;
@@ -57,7 +57,7 @@ public class Report {
 	
 	@Override
 	public String toString() {
-		return this.clients.toString() + "\n" + this.sales.toString() + "\n" + this.salesmen.toString() + "\n";
+		return String.format("%s %n %s %n %s %n", this.clients.toString(), this.sales.toString(), this.salesmen.toString());
 	}
 
 	public int getClientsQtd() {

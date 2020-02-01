@@ -6,21 +6,18 @@ import java.util.List;
 public class Sale {
 	
 	private static final int EXPECTED_ARRAY_LENGTH = 4;
-	private static final int ID_INDEX = 0;
 	private static final int SALE_ID_INDEX = 1;
 	private static final int ITEMS_INDEX = 2;
 	private static final int SALESMAN_NAME_INDEX = 3;
 	private static final String SALES_DELIMITER = ",";
 	private static final String SALES_ITEMS_DELIMITER = "-";
 
-	private String id; 
 	private String salesId; 
 	private List<Item> items;
 	private String salesmanName;
 	private double total;
 	
-	public Sale(String id, String saleId, List<Item> items, String salesmanName) {
-		this.id = id;
+	public Sale(String saleId, List<Item> items, String salesmanName) {
 		this.salesId = saleId;
 		this.items = List.copyOf(items);
 		this.salesmanName = salesmanName;
@@ -33,7 +30,7 @@ public class Sale {
 			throw new IllegalArgumentException("Sale.from - Invalid data.");
 		}
 		
-		return new Sale(data[ID_INDEX], data[SALE_ID_INDEX], getItems(data[ITEMS_INDEX]), data[SALESMAN_NAME_INDEX]);
+		return new Sale(data[SALE_ID_INDEX], getItems(data[ITEMS_INDEX]), data[SALESMAN_NAME_INDEX]);
 	}
 	
 	private static List<Item> getItems(String strItems){
