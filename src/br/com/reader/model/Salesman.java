@@ -6,18 +6,15 @@ public class Salesman {
 	private static final int ID_INDEX = 0;
 	private static final int CPF_INDEX = 1;
 	private static final int NAME_INDEX = 2;
-	private static final int SALARY_INDEX = 3;
 
 	private String id;
 	private String cpf;
 	private String name;
-	private Double salary;
 
-	public Salesman(String id, String cpf, String name, Double salary) {
+	public Salesman(String id, String cpf, String name) {
 		this.id = id;
 		this.cpf = cpf;
 		this.name = name;
-		this.salary = salary;
 	}
 	
 	public static Salesman from(String[] data) {
@@ -26,7 +23,7 @@ public class Salesman {
 			throw new IllegalArgumentException("Salesman.from - Invalid data.");
 		}
 
-		return new Salesman(data[ID_INDEX], data[CPF_INDEX], data[NAME_INDEX], Double.valueOf(data[SALARY_INDEX]));
+		return new Salesman(data[ID_INDEX], data[CPF_INDEX], data[NAME_INDEX]);
 	}
 	
 	@Override

@@ -13,32 +13,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import br.com.reader.model.Client;
+import br.com.reader.constants.DataType;
 import br.com.reader.model.Report;
-import br.com.reader.model.Sale;
-import br.com.reader.model.Salesman;
+import br.com.reader.model.ReportOutDTO;
 
 public final class ReaderUtil {
 
 	private static final String INPUT_DATA_TYPE = ".dat";
 	private static final String OS_HOMEPATH_VAR_NAME = "HOMEPATH";
 	private static final String OS_DIVISOR = "\\";
-
 	private static final String DATA_DELIMITER = "ç";
-	private static final String SALE_TYPE = "003";
-	private static final String CLIENT_TYPE = "002";
-	private static final String SALESMAN_TYPE = "001";
+	private static final String PATH_IN = System.getenv(OS_HOMEPATH_VAR_NAME) + OS_DIVISOR + "data" + OS_DIVISOR + "in";
+	private static final String PATH_OUT = System.getenv(OS_HOMEPATH_VAR_NAME) + OS_DIVISOR + "data" + OS_DIVISOR + "out";
 
-	private ReaderUtil() {
-	}
-
-	private static final String PATH_IN;
-	private static final String PATH_OUT;
-
-	static {
-		PATH_IN = System.getenv(OS_HOMEPATH_VAR_NAME) + OS_DIVISOR + "data" + OS_DIVISOR + "in";
-		PATH_OUT = System.getenv(OS_HOMEPATH_VAR_NAME) + OS_DIVISOR + "data" + OS_DIVISOR + "out";
-	}
+	private ReaderUtil() {}
+	
 
 	public static List<String> getFileList() {
 
@@ -84,7 +73,7 @@ public final class ReaderUtil {
 
 		File file = new File(PATH_OUT + OS_DIVISOR + fileName);
 
-		if(!file.exists() && !file.createNewFile()) {
+		if (!file.exists() && !file.createNewFile()) {
 			throw new IOException(String.format("Wasn't possible create the file's called %s", fileName));
 		}
 
@@ -94,20 +83,28 @@ public final class ReaderUtil {
 	}
 
 	private static void fillReportData(Report report, String[] data) {
-		switch (data[0]) {
-			case SALESMAN_TYPE:
-				report.add(Salesman.from(data));
-				break;
-			case CLIENT_TYPE:
-				report.add(Client.from(data));
-				break;
-			case SALE_TYPE:
-				report.add(Sale.from(data));
-				break;
-			default:
-				Logger.getAnonymousLogger().log(Level.SEVERE, 
-						String.format("invalid data! %s", data[0]));
-				break;
+
+		DataType dataProcessorType = DataType.getByCode(data[0]);
+
+		if (dataProcessorType != null) {
+			dataProcessorType.fillReportData(report, data);
+			return;
+		}
+
+		Logger.getAnonymousLogger().log(Level.SEVERE, String.format("invalid data! %s", data[0]));
+	}
+
+	public static void proccessReport() {
+		try {
+			for (String path : ReaderUtil.getFileList()) {
+				Optional<Report> optRead = ReaderUtil.readFile(path);
+				if (optRead.isPresent()) {
+					ReaderUtil.createFile(ReportOutDTO.from(optRead.get()), path);
+				}
+			}
+		} catch (IOException e) {
+			Logger.getAnonymousLogger().log(Level.SEVERE, String
+					.format("Erro no processameno do relatório, tente novamente mais tarde!%n %s %n", e.getMessage()));
 		}
 	}
 }
